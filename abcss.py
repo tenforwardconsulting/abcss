@@ -17,7 +17,6 @@ class AbcssCommand(sublime_plugin.TextCommand):
       return
 
     #self.set_default_content(edit)
-
     #self.check_and_add_trailing_space(view, edit)
 
     all_content = sublime.Region(0, view.size())
@@ -33,12 +32,12 @@ class AbcssCommand(sublime_plugin.TextCommand):
       AbcssCommand.line_number += 1
 
       line_string = view.substr(line)
-      print('LINE ' + str(AbcssCommand.line_number) + ': ' + line_string)
+      #print('LINE ' + str(AbcssCommand.line_number) + ': ' + line_string)
 
       leading_spaces = re.compile('^\s*').match(line_string).end()
 
       first_or_blank = (leading_spaces == 0 | len(line_string.strip()) == 0)
-      first_word_match = re.compile('^\s*(.[^:\s]+)').match(line_string)
+      first_word_match = re.compile('^\s*(.[^:,\s]+)').match(line_string)
 
       if first_or_blank:
         first_word = ''
@@ -63,7 +62,7 @@ class AbcssCommand(sublime_plugin.TextCommand):
         self.replace_content(view, edit, line)
 
       else:
-        print('  <ADDING> "' + line_string + '" TO ARRAY')
+        #print('  <ADDING> "' + line_string + '" TO ARRAY')
         if AbcssCommand.insert_begin == 0:
           AbcssCommand.insert_begin = line.begin()
         AbcssCommand.insert_end = line.end()
@@ -72,8 +71,6 @@ class AbcssCommand(sublime_plugin.TextCommand):
 
         if line == AbcssCommand.all_lines[len(AbcssCommand.all_lines) - 1]:
           self.replace_content(view, edit, line)
-
-    print('')
 
 
   def handle_generic_sort(self, view):
@@ -97,7 +94,7 @@ class AbcssCommand(sublime_plugin.TextCommand):
     if has_indent:
       return False
     else:
-      print('GENERIC SORT')
+      #print('GENERIC SORT')
       sublime.active_window().run_command('sort_lines', { 'case_sensitive': False })
       return True
 
@@ -107,7 +104,7 @@ class AbcssCommand(sublime_plugin.TextCommand):
       if len(view.sel()[0]) == 0:
         return False
       else:
-        print('SELECTION SORT')
+        #print('SELECTION SORT')
         sublime.active_window().run_command('sort_lines', { 'case_sensitive': False })
         return True
     else:
@@ -131,8 +128,7 @@ class AbcssCommand(sublime_plugin.TextCommand):
       replacement_range = sublime.Region(AbcssCommand.insert_begin, AbcssCommand.insert_end)
       replacement_string = '\n'.join(str(x) for x in AbcssCommand.sort_array)
 
-      print('  REPLACING -----' + view.substr(replacement_range) + '----- WITH -----' + replacement_string + '-----')
-      #print('  REPLACING: ' + str(AbcssCommand.sort_array) + ', RANGE: ' + str(replacement_range))
+      #print('  REPLACING -----' + view.substr(replacement_range) + '----- WITH -----' + replacement_string + '-----')
 
       view.replace(edit, replacement_range, replacement_string)
 
