@@ -94,7 +94,6 @@ class AbcssCommand(sublime_plugin.TextCommand):
     if has_indent:
       return False
     else:
-      #print('GENERIC SORT')
       sublime.active_window().run_command('sort_lines', { 'case_sensitive': False })
       return True
 
@@ -104,7 +103,6 @@ class AbcssCommand(sublime_plugin.TextCommand):
       if len(view.sel()[0]) == 0:
         return False
       else:
-        #print('SELECTION SORT')
         sublime.active_window().run_command('sort_lines', { 'case_sensitive': False })
         return True
     else:
@@ -133,7 +131,6 @@ class AbcssCommand(sublime_plugin.TextCommand):
       view.replace(edit, replacement_range, replacement_string)
 
       AbcssCommand.sort_array = []
-
       AbcssCommand.insert_begin = 0
       AbcssCommand.insert_end = 0
 
@@ -180,27 +177,6 @@ body
     padding: 0
     margin: 10px
 '''.strip()
-    #     defaultContent = '''
-    # body
-    #   color: black
-    #   z-index: 1
-    #   background: white
-    #   text-align: center
-    # .class1
-    #   padding: 10px
-    #   float: left
-    #   margin: 10px
-    #   text-align: center
-    #   z-index: 100
-    #   .class2
-    #     background: blue
-    #     border: 1px solid #dddddd
-    #     text-align: left
-    #     color: white
-    #   .class3
-    #     width: 100px
-    #     color: black
-    # '''.strip()
 
     self.view.insert(edit, 0, defaultContent)
 
