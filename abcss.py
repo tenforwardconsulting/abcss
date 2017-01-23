@@ -123,7 +123,7 @@ class AbcssCommand(sublime_plugin.TextCommand):
 
   def replace_content(self, view, edit, line):
     if AbcssCommand.sort_array:
-      AbcssCommand.sort_array.sort()
+      AbcssCommand.sort_array.sort(key=lambda x: x.replace('-', ''))
 
       replacement_range = sublime.Region(AbcssCommand.insert_begin, AbcssCommand.insert_end)
       replacement_string = '\n'.join(str(x) for x in AbcssCommand.sort_array)
