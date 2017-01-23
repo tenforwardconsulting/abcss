@@ -7,7 +7,7 @@ import re
 class AbcssCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     print('ABCSS Sorting...')
-    
+
     view = self.view
 
     #self.fake_clear_console()
@@ -39,7 +39,7 @@ class AbcssCommand(sublime_plugin.TextCommand):
       leading_spaces = re.compile('^\s*').match(line_string).end()
 
       first_or_blank = (leading_spaces == 0 | len(line_string.strip()) == 0)
-      first_word_match = re.compile('^\s*(.[^:,\s\.]+)').match(line_string)
+      first_word_match = re.compile('^\s*((\.)?[^\s\.\:\,\[]+)').match(line_string)
 
       if first_or_blank:
         first_word = ''
@@ -127,8 +127,6 @@ class AbcssCommand(sublime_plugin.TextCommand):
 
       replacement_range = sublime.Region(AbcssCommand.insert_begin, AbcssCommand.insert_end)
       replacement_string = '\n'.join(str(x) for x in AbcssCommand.sort_array)
-
-      #print('  REPLACING -----' + view.substr(replacement_range) + '----- WITH -----' + replacement_string + '-----')
 
       view.replace(edit, replacement_range, replacement_string)
 
