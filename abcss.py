@@ -10,16 +10,11 @@ class AbcssCommand(sublime_plugin.TextCommand):
 
     view = self.view
 
-    #self.fake_clear_console()
-
     if self.handle_generic_sort(view):
       return
 
     if self.handle_selection_sort(view):
       return
-
-    #self.set_default_content(edit)
-    #self.check_and_add_trailing_space(view, edit)
 
     all_content = sublime.Region(0, view.size())
 
@@ -34,12 +29,11 @@ class AbcssCommand(sublime_plugin.TextCommand):
       AbcssCommand.line_number += 1
 
       line_string = view.substr(line)
-      #print('LINE ' + str(AbcssCommand.line_number) + ': ' + line_string)
 
       leading_spaces = re.compile('^\s*').match(line_string).end()
 
       first_or_blank = (leading_spaces == 0 | len(line_string.strip()) == 0)
-      first_word_match = re.compile('^\s*((\.)?[^\s\.\:\,\[]+)').match(line_string)
+      first_word_match = re.compile('^\s*((\.)?[^\s\.\#\:\,\[]+)').match(line_string)
 
       if first_or_blank:
         first_word = ''
@@ -59,12 +53,13 @@ class AbcssCommand(sublime_plugin.TextCommand):
           # PSEUDO CLASS
           first_word.startswith(':') or
           # WILDCARD
-          first_word.startswith('*')
+          first_word.startswith('*') or
+          # VARIABLE
+          first_word.startswith('$')
         ):
         self.replace_content(view, edit, line)
 
       else:
-        #print('  <ADDING> "' + line_string + '" TO ARRAY')
         if AbcssCommand.insert_begin == 0:
           AbcssCommand.insert_begin = line.begin()
         AbcssCommand.insert_end = line.end()
@@ -101,16 +96,14 @@ class AbcssCommand(sublime_plugin.TextCommand):
 
 
   def handle_selection_sort(self, view):
-    if len(view.sel()) == 1:
-      if len(view.sel()[0]) == 0:
-        return False
-      else:
-        sublime.active_window().run_command('sort_lines', { 'case_sensitive': False })
-        return True
-    else:
-      sublime.message_dialog('Cannot sort with multi-cursor active')
-      return False
+    selection_count = 0
+    for selection in view.sel():
+      selection_count += len(selection)
+    if selection_count > 0:
+      sublime.active_window().run_command('sort_lines', { 'case_sensitive': False })
+      return True
 
+    return False
 
   def check_and_add_trailing_space(self, view, edit):
     all_lines = view.lines(sublime.Region(0, view.size()))
@@ -285,6 +278,7 @@ htmlArray = [
   'sub',
   'summary',
   'sup',
+  'svg',
   'table',
   'tbody',
   'td',
